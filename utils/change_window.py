@@ -8,20 +8,30 @@ WUKONG_TITLE = "Sekiro"
 # WUKONG_CLASS_NAME = "UnrealWindow"  # 也可以使用类名去寻找窗口 getWindowsWithClass
 
 
+def getGameWindow(title): 
+    arr_window = gw.getWindowsWithTitle(title)
+    for window in arr_window: 
+        if window.title == title: 
+            return window
+
+    raise Exception('can not get window having title: ', title)
+
 def get_window_position(title):
     try:
-        window = gw.getWindowsWithTitle(title)[0]  # 获取第一个匹配的窗口
+        # window = gw.getWindowsWithTitle(title)[0]  # 获取第一个匹配的窗口
+        window = getGameWindow(title)
         return window.topleft, window.bottomright
-    except IndexError:
+    except Exception as e:
         print(f"No window with title '{title}' found.")
         return None, None
 
 
 def move_window(title, x, y):
     try:
-        window = gw.getWindowsWithTitle(title)[0]  # 获取第一个匹配的窗口
+        # window = gw.getWindowsWithTitle(title)[0]  # 获取第一个匹配的窗口
+        window = getGameWindow(title)
         window.moveTo(x, y)
-    except IndexError:
+    except Exception as e:
         print(f"No window with title '{title}' found.")
 
 
@@ -32,26 +42,29 @@ def set_window_topleft():
 
 def is_window_visible(window_title):
     try:
-        window = gw.getWindowsWithTitle(window_title)[0]
+        # window = gw.getWindowsWithTitle(window_title)[0]
+        window = getGameWindow(window_title)
         return window.visible  # 检查窗口是否可见
-    except IndexError:
+    except Exception as e:
         return False  # 没有找到窗口
 
 
 def is_window_active(window_title):
     try:
-        window = gw.getWindowsWithTitle(window_title)[0]
+        # window = gw.getWindowsWithTitle(window_title)[0]
+        window = getGameWindow(window_title)
         return window.isActive  # 检查窗口是否为活动窗口
-    except IndexError:
+    except Exception as e:
         return False  # 没有找到窗口
 
 
 def restore_window(window_title):
     try:
-        window = gw.getWindowsWithTitle(window_title)[0]
+        # window = gw.getWindowsWithTitle(window_title)[0]
+        window = getGameWindow(window_title)
         if window.isMinimized:  # 如果窗口最小化
             window.restore()  # 恢复窗口
-    except IndexError:
+    except Exception as e:
         print(f"Window titled '{window_title}' not found.")
 
 
@@ -60,7 +73,9 @@ def correction_window():
     if not is_window_visible(WUKONG_TITLE):
         print(f"{WUKONG_TITLE} is not visible.")
         restore_window(WUKONG_TITLE)  # 尝试恢复窗口
-        gw.getWindowsWithTitle(WUKONG_TITLE)[0].activate()  # 激活窗口
+        # gw.getWindowsWithTitle(WUKONG_TITLE)[0].activate()  # 激活窗口
+        window = getGameWindow(WUKONG_TITLE)
+        window.activate()
         set_window_topleft()
 
     elif not is_window_active(WUKONG_TITLE):
@@ -68,7 +83,9 @@ def correction_window():
         # have a bug here. 
         # the windows may failed to be activated.
         restore_window(WUKONG_TITLE)  # 尝试恢复窗口
-        gw.getWindowsWithTitle(WUKONG_TITLE)[0].activate()  # 激活窗口
+        # gw.getWindowsWithTitle(WUKONG_TITLE)[0].activate()  # 激活窗口
+        window = getGameWindow(WUKONG_TITLE)
+        window.activate()
         set_window_topleft()
 
     else:

@@ -149,6 +149,7 @@ class ActionExecutor:
 
     def _press_mouse(self, button):
         """按下鼠标按钮并记录"""
+        print('press mouse:', button)
         if self.interrupt_event.is_set():
             return
         if button == "left":
@@ -164,6 +165,7 @@ class ActionExecutor:
 
     def _release_mouse(self, button):
         """释放鼠标按钮并从记录中移除"""
+        print('release mouse:', button)
         if self.interrupt_event.is_set():
             return
         if button == "left":

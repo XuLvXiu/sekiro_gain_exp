@@ -12,8 +12,8 @@ from window import BaseWindow
 import grabscreen
 from log import log
 from actions import ActionExecutor
-from pynput.keyboard import Listener
-
+from pynput.keyboard import Listener, Key
+import os
 
 # Event to control running state
 running_event = mp.Event()
@@ -64,25 +64,24 @@ def main_loop():
 
         log.info('main loop end one epoch')
 
+
 def on_press(key):
-    print('key: ', key)
+    print('on_press key: ', key)
     try:
-        if hasattr(key, 'scan_code'):
-            print(f"scan_code: : {key.scan_code}")
+        if key == Key.esc: 
+            log.info('The user presses Esc in the game, will terminate.')
+            os._exit(0)
+
     except Exception as e:
         print(e)
 
+
 def main():
-    '''
-    with Listener(on_press=on_press) as listener:
-        listener.join()
-
-    while True: 
-        time.sleep(1)
-        continue
-    '''
-
     signal.signal(signal.SIGINT, signal_handler)
+
+    listener = Listener(on_press=on_press)
+    listener.start()
+    log.info('keyboard listener setup. press Esc to exit')
 
     # Initialize camera
     grabscreen.init_camera(target_fps=6)
